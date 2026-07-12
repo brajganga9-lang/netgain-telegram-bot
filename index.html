@@ -3,36 +3,55 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>NET GAIN | Coming Soon</title>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
 body{
   font-family:Arial,sans-serif;
   background:linear-gradient(180deg,#050816,#0d1024);
   color:#fff;
   min-height:100vh;
 }
+
 .container{
   max-width:500px;
   margin:auto;
   padding:25px 16px 50px;
   text-align:center;
 }
+
 .logo{
-  width:90px;height:90px;
+  width:90px;
+  height:90px;
   margin:10px auto 15px;
   border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:27px;
-  font-weight:800;
+  display:block;
+  object-fit:cover;
   background:linear-gradient(135deg,#7c3aed,#2563eb);
   box-shadow:0 0 35px rgba(124,58,237,.55);
 }
-h1{font-size:38px;letter-spacing:2px}
-.tagline{color:#aab4c8;margin:7px 0 22px}
+
+h1{
+  font-size:38px;
+  letter-spacing:2px;
+}
+
+.tagline{
+  color:#aab4c8;
+  margin:7px 0 22px;
+}
+
 .badge{
   display:inline-block;
   padding:9px 16px;
@@ -41,6 +60,7 @@ h1{font-size:38px;letter-spacing:2px}
   color:#c4b5fd;
   margin-bottom:10px;
 }
+
 .card{
   background:#111827;
   border:1px solid #29344a;
@@ -49,35 +69,89 @@ h1{font-size:38px;letter-spacing:2px}
   margin:18px 0;
   box-shadow:0 10px 30px rgba(0,0,0,.3);
 }
-.card h2{margin-bottom:15px}
+
+.card h2{
+  margin-bottom:15px;
+}
+
 .launch{
   color:#22c55e;
   font-weight:bold;
   margin-bottom:15px;
 }
+
+/* DASHBOARD */
+
+.dashboard-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:15px;
+}
+
+.stat{
+  background:#070c17;
+  border:1px solid #334155;
+  border-radius:14px;
+  padding:15px 8px;
+}
+
+.stat strong{
+  display:block;
+  font-size:19px;
+  color:#a78bfa;
+  margin-top:7px;
+  word-break:break-word;
+}
+
+.status{
+  padding:11px;
+  border-radius:10px;
+  background:#070c17;
+  color:#cbd5e1;
+  margin-top:10px;
+  font-size:13px;
+}
+
+.hidden{
+  display:none;
+}
+
+/* COUNTDOWN */
+
 .countdown{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:7px;
 }
+
 .time-box{
   background:#070c17;
   padding:14px 3px;
   border-radius:12px;
 }
+
 .time-box span{
   display:block;
   font-size:24px;
   font-weight:bold;
   color:#a78bfa;
 }
-.time-box small{font-size:9px;color:#94a3b8}
+
+.time-box small{
+  font-size:9px;
+  color:#94a3b8;
+}
+
+/* BOOKING */
+
 .booking{
   font-size:30px;
   font-weight:800;
   color:#fbbf24;
   margin:10px 0;
 }
+
 .network{
   display:inline-block;
   background:#f0b90b;
@@ -87,16 +161,7 @@ h1{font-size:38px;letter-spacing:2px}
   border-radius:20px;
   margin:8px 0 15px;
 }
-.input{
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #475569;
-  background:#080d18;
-  color:white;
-  margin:8px 0;
-  font-size:15px;
-}
+
 .address{
   background:#050914;
   border:1px dashed #475569;
@@ -107,6 +172,9 @@ h1{font-size:38px;letter-spacing:2px}
   margin:12px 0;
   color:#dbeafe;
 }
+
+/* BUTTONS */
+
 .btn{
   display:block;
   width:100%;
@@ -119,13 +187,27 @@ h1{font-size:38px;letter-spacing:2px}
   cursor:pointer;
   text-decoration:none;
 }
+
 .primary{
   background:linear-gradient(90deg,#7c3aed,#2563eb);
   color:white;
 }
-.green{background:#16a34a;color:white}
-.telegram{background:#229ED9;color:white}
-.share{background:#f59e0b;color:#111}
+
+.green{
+  background:#16a34a;
+  color:white;
+}
+
+.telegram{
+  background:#229ED9;
+  color:white;
+}
+
+.share{
+  background:#f59e0b;
+  color:#111;
+}
+
 .ref-box{
   background:#070c17;
   border:1px solid #334155;
@@ -135,19 +217,32 @@ h1{font-size:38px;letter-spacing:2px}
   font-size:13px;
   margin-top:12px;
 }
+
 .sponsor{
   color:#22c55e;
   font-weight:bold;
   margin:10px 0;
 }
+
 .warning{
   font-size:12px;
   color:#fca5a5;
   line-height:1.5;
   margin-top:15px;
 }
-.features{text-align:left;line-height:2;color:#d1d5db}
-.footer{color:#64748b;font-size:12px;margin-top:30px}
+
+.features{
+  text-align:left;
+  line-height:2;
+  color:#d1d5db;
+}
+
+.footer{
+  color:#64748b;
+  font-size:12px;
+  margin-top:30px;
+}
+
 </style>
 </head>
 
@@ -155,112 +250,215 @@ h1{font-size:38px;letter-spacing:2px}
 
 <div class="container">
 
-<img class="logo" src="file_00000000b2e47208b176665a10ebef91.png" alt="NET GAIN Logo">
-  <h1>NET GAIN</h1>
-  <p class="tagline">A Decentralised Community</p>
+  <!-- LOGO -->
 
-  <div class="badge">🚀 OFFICIAL LAUNCH COMING SOON</div>
+  <img
+    class="logo"
+    src="file_00000000b2e47208b176665a10ebef91.png"
+    alt="NET GAIN Logo"
+  >
+
+  <h1>NET GAIN</h1>
+
+  <p class="tagline">
+    A Decentralised Community
+  </p>
+
+  <div class="badge">
+    🚀 OFFICIAL LAUNCH COMING SOON
+  </div>
+
+
+  <!-- MEMBER DASHBOARD -->
+
+  <div class="card">
+
+    <h2>👤 My NET GAIN Dashboard</h2>
+
+    <div id="appStatus" class="status">
+      Connecting with Telegram...
+    </div>
+
+    <div id="memberData" class="hidden">
+
+      <div class="dashboard-grid">
+
+        <div class="stat">
+          🆔 My ID
+          <strong id="myMemberId">--</strong>
+        </div>
+
+        <div class="stat">
+          🤝 Sponsor
+          <strong id="mySponsor">Direct</strong>
+        </div>
+
+        <div class="stat">
+          👤 Direct Referrals
+          <strong id="myDirect">0</strong>
+        </div>
+
+        <div class="stat">
+          👥 Total Team
+          <strong id="myTeam">0</strong>
+        </div>
+
+      </div>
+
+      <div
+        class="ref-box"
+        id="myReferralLink"
+      >
+        Referral link loading...
+      </div>
+
+      <button
+        class="btn share"
+        onclick="copyMyReferral()"
+      >
+        📋 COPY MY REFERRAL LINK
+      </button>
+
+      <button
+        class="btn green"
+        onclick="shareMyReferral()"
+      >
+        📤 SHARE & PROMOTE
+      </button>
+
+    </div>
+
+  </div>
+
 
   <!-- COUNTDOWN -->
+
   <div class="card">
+
     <h2>⏳ Launch Countdown</h2>
-    <div class="launch">30 JULY 2026 • 1:00 PM IST</div>
+
+    <div class="launch">
+      30 JULY 2026 • 1:00 PM IST
+    </div>
 
     <div class="countdown">
+
       <div class="time-box">
         <span id="days">00</span>
         <small>DAYS</small>
       </div>
+
       <div class="time-box">
         <span id="hours">00</span>
         <small>HOURS</small>
       </div>
+
       <div class="time-box">
         <span id="minutes">00</span>
         <small>MINUTES</small>
       </div>
+
       <div class="time-box">
         <span id="seconds">00</span>
         <small>SECONDS</small>
       </div>
+
     </div>
+
   </div>
 
-  <!-- REFERRAL -->
-  <div class="card">
-    <h2>👥 Refer & Promote</h2>
 
-    <div id="sponsorText" class="sponsor">
+  <!-- REFERRAL -->
+
+  <div class="card">
+
+    <h2>👥 Referral System</h2>
+
+    <div
+      id="sponsorText"
+      class="sponsor"
+    >
       Direct Visit • No Sponsor
     </div>
 
-    <p>Enter your NET GAIN ID to create your promotion link.</p>
+    <p>
+      Your personal referral link is created automatically
+      after Telegram registration.
+    </p>
 
-    <input
-      class="input"
-      id="memberId"
-      placeholder="Example: NG00001"
-      maxlength="10"
-    >
-
-    <button class="btn primary" onclick="generateReferral()">
-      🔗 GENERATE REFERRAL LINK
-    </button>
-
-    <div class="ref-box" id="referralLink">
-      Your referral link will appear here.
-    </div>
-
-    <button class="btn share" onclick="copyReferral()">
-      📋 COPY REFERRAL LINK
-    </button>
-
-    <button class="btn green" onclick="shareTelegram()">
-      📤 SHARE ON TELEGRAM
-    </button>
   </div>
 
+
   <!-- BOOKING -->
+
   <div class="card">
+
     <h2>🎟️ Advance ID Booking</h2>
 
-    <p>Reserve your NET GAIN ID before official launch.</p>
+    <p>
+      Reserve your NET GAIN ID before official launch.
+    </p>
 
-    <div class="booking">12 USDT</div>
+    <div class="booking">
+      12 USDT
+    </div>
 
     <div class="network">
       BNB SMART CHAIN • BEP20
     </div>
 
-    <p>Send USDT (BEP20) only to:</p>
+    <p>
+      Send USDT (BEP20) only to:
+    </p>
 
-    <div class="address" id="wallet">
+    <div
+      class="address"
+      id="wallet"
+    >
       0x5c2B762E077f39610D27C5FACf0317565513D23C
     </div>
 
-    <button class="btn primary" onclick="copyWallet()">
+    <button
+      class="btn primary"
+      onclick="copyWallet()"
+    >
       📋 COPY WALLET ADDRESS
     </button>
 
     <p class="warning">
-      ⚠️ Send only USDT using the BEP20 (BNB Smart Chain) network.
-      Always verify the network and wallet address before payment.
+      ⚠️ Send only USDT using the BEP20
+      (BNB Smart Chain) network.
+      Always verify the network and wallet
+      address before payment.
     </p>
+
   </div>
 
+
   <!-- PLAN -->
+
   <div class="card">
+
     <h2>🌍 NET GAIN</h2>
 
     <div class="features">
+
       ✓ Global Community<br>
+
       ✓ Matrix Income<br>
+
       ✓ Direct Income<br>
+
       ✓ Level Income<br>
+
       ✓ Unlimited Cycles<br>
+
       ✓ Personal Referral Link
+
     </div>
+
   </div>
+
 
   <a
     class="btn telegram"
@@ -269,136 +467,729 @@ h1{font-size:38px;letter-spacing:2px}
     🤖 OPEN NET GAIN BOT
   </a>
 
+
   <div class="footer">
-    NET GAIN © 2026<br><br>
+
+    NET GAIN © 2026
+
+    <br><br>
+
     CONNECT • GROW • LEAD 🚀
+
   </div>
 
 </div>
 
+
 <script>
 
-/* LAUNCH COUNTDOWN */
-const launchDate =
-new Date("2026-07-30T13:00:00+05:30").getTime();
+/* =========================
+   SUPABASE CONNECTION
+========================= */
 
-setInterval(function(){
+const SUPABASE_URL =
+"https://yigfsnuvfylggtmuqqep.supabase.co";
 
-  const now = new Date().getTime();
-  const distance = launchDate - now;
+const SUPABASE_KEY =
+"sb_publishable_qt2MEjJV9wIgqdyyGQ6gMw_C2lvqsoQ";
 
-  if(distance <= 0){
-    document.getElementById("days").innerHTML="00";
-    document.getElementById("hours").innerHTML="00";
-    document.getElementById("minutes").innerHTML="00";
-    document.getElementById("seconds").innerHTML="00";
-    return;
-  }
-
-  document.getElementById("days").innerHTML =
-  Math.floor(distance/(1000*60*60*24));
-
-  document.getElementById("hours").innerHTML =
-  Math.floor((distance%(1000*60*60*24))/(1000*60*60));
-
-  document.getElementById("minutes").innerHTML =
-  Math.floor((distance%(1000*60*60))/(1000*60));
-
-  document.getElementById("seconds").innerHTML =
-  Math.floor((distance%(1000*60))/1000);
-
-},1000);
+const supabaseClient =
+window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
 
-/* CAPTURE REFERRAL ID */
-const params = new URLSearchParams(window.location.search);
-const sponsor = params.get("ref");
+/* =========================
+   TELEGRAM MINI APP
+========================= */
+
+const tg =
+window.Telegram &&
+window.Telegram.WebApp
+?
+window.Telegram.WebApp
+:
+null;
+
+
+let currentMember = null;
+
+let currentReferralLink = "";
+
+
+if(tg){
+
+  tg.ready();
+
+  tg.expand();
+
+}
+
+
+/* =========================
+   CAPTURE SPONSOR
+========================= */
+
+const params =
+new URLSearchParams(
+  window.location.search
+);
+
+
+let sponsor =
+(
+  params.get("ref") || ""
+)
+.trim()
+.toUpperCase();
+
+
+/* Telegram Start Parameter */
+
+if(
+  !sponsor &&
+  tg &&
+  tg.initDataUnsafe &&
+  tg.initDataUnsafe.start_param
+){
+
+  sponsor =
+  String(
+    tg.initDataUnsafe.start_param
+  )
+  .trim()
+  .toUpperCase();
+
+}
+
+
+/* Validate Sponsor ID */
+
+if(
+  !/^NG\d{5}$/.test(sponsor)
+){
+
+  sponsor = null;
+
+}
+
+
+/* Show Sponsor */
 
 if(sponsor){
-  document.getElementById("sponsorText").innerText =
-  "✅ Referred By: " + sponsor.toUpperCase();
+
+  document
+  .getElementById("sponsorText")
+  .innerText =
+  "✅ Referred By: " + sponsor;
+
 }
 
 
-/* GENERATE REFERRAL LINK */
-function generateReferral(){
+/* =========================
+   REGISTER / LOAD MEMBER
+========================= */
 
-  let id =
-  document.getElementById("memberId")
-  .value.trim().toUpperCase();
+async function initMember(){
 
-  if(!/^NG\d{5}$/.test(id)){
-    alert("Please enter a valid ID like NG00001");
+  const status =
+  document.getElementById(
+    "appStatus"
+  );
+
+
+  const memberData =
+  document.getElementById(
+    "memberData"
+  );
+
+
+  /* Get Telegram User */
+
+  const telegramUser =
+  tg &&
+  tg.initDataUnsafe &&
+  tg.initDataUnsafe.user
+  ?
+  tg.initDataUnsafe.user
+  :
+  null;
+
+
+  /* Not opened inside Telegram */
+
+  if(!telegramUser){
+
+    status.innerHTML =
+    "⚠️ Please open this page from the <b>NET GAIN Telegram Bot</b> to register and view your member dashboard.";
+
     return;
+
   }
 
-  const link =
-  window.location.origin +
-  window.location.pathname +
-  "?ref=" +
-  encodeURIComponent(id);
 
-  document.getElementById("referralLink").innerText = link;
+  status.innerText =
+  "Registering / loading your NET GAIN account...";
+
+
+  /* Full Name */
+
+  const fullName =
+
+  [
+    telegramUser.first_name,
+    telegramUser.last_name
+  ]
+
+  .filter(Boolean)
+
+  .join(" ");
+
+
+  /* Call Supabase Function */
+
+  const {
+    data,
+    error
+  }
+
+  =
+
+  await supabaseClient.rpc(
+
+    "register_netgain_user",
+
+    {
+
+      p_telegram_id:
+      telegramUser.id,
+
+      p_username:
+      telegramUser.username || null,
+
+      p_full_name:
+      fullName || null,
+
+      p_sponsor_id:
+      sponsor
+
+    }
+
+  );
+
+
+  /* Registration Error */
+
+  if(error){
+
+    console.error(error);
+
+    status.innerText =
+    "❌ Registration error. Please reopen the app or contact support.";
+
+    return;
+
+  }
+
+
+  /* Member Data */
+
+  currentMember =
+  Array.isArray(data)
+  ?
+  data[0]
+  :
+  data;
+
+
+  if(
+    !currentMember ||
+    !currentMember.member_id
+  ){
+
+    status.innerText =
+    "❌ Could not load member account.";
+
+    return;
+
+  }
+
+
+  /* Show Member ID */
+
+  document
+  .getElementById("myMemberId")
+  .innerText =
+  currentMember.member_id;
+
+
+  /* Show Sponsor */
+
+  document
+  .getElementById("mySponsor")
+  .innerText =
+
+  currentMember.sponsor_id
+  ||
+  "Direct";
+
+
+  /* Create Personal Referral Link */
+
+  currentReferralLink =
+
+  window.location.origin
+
+  +
+
+  window.location.pathname
+
+  +
+
+  "?ref="
+
+  +
+
+  encodeURIComponent(
+    currentMember.member_id
+  );
+
+
+  document
+  .getElementById("myReferralLink")
+  .innerText =
+  currentReferralLink;
+
+
+  /* Load Team Statistics */
+
+  await loadStats(
+    currentMember.member_id
+  );
+
+
+  /* Success */
+
+  status.innerText =
+  "✅ Account connected";
+
+
+  memberData
+  .classList
+  .remove("hidden");
+
 }
 
 
-/* COPY REFERRAL LINK */
-function copyReferral(){
+/* =========================
+   LOAD DIRECT + TOTAL TEAM
+========================= */
 
-  const link =
-  document.getElementById("referralLink").innerText;
+async function loadStats(
+  memberId
+){
 
-  if(link.includes("will appear")){
-    alert("First generate your referral link.");
-    return;
+  const {
+    data,
+    error
   }
 
-  navigator.clipboard.writeText(link)
-  .then(function(){
-    alert("Referral link copied!");
-  });
+  =
+
+  await supabaseClient.rpc(
+
+    "get_netgain_stats",
+
+    {
+
+      p_member_id:
+      memberId
+
+    }
+
+  );
+
+
+  if(error){
+
+    console.error(error);
+
+    return;
+
+  }
+
+
+  const stats =
+
+  Array.isArray(data)
+
+  ?
+
+  data[0]
+
+  :
+
+  data;
+
+
+  if(stats){
+
+    document
+    .getElementById("myDirect")
+    .innerText =
+
+    stats.total_direct
+    ??
+    0;
+
+
+    document
+    .getElementById("myTeam")
+    .innerText =
+
+    stats.total_team
+    ??
+    0;
+
+  }
+
 }
 
 
-/* SHARE REFERRAL LINK */
-function shareTelegram(){
+/* =========================
+   COPY REFERRAL LINK
+========================= */
 
-  const link =
-  document.getElementById("referralLink").innerText;
+function copyMyReferral(){
 
-  if(link.includes("will appear")){
-    alert("First generate your referral link.");
+  if(
+    !currentReferralLink
+  ){
+
+    alert(
+      "Open the app from Telegram first."
+    );
+
     return;
+
   }
+
+
+  navigator
+  .clipboard
+  .writeText(
+    currentReferralLink
+  )
+
+  .then(
+
+    function(){
+
+      alert(
+        "Referral link copied!"
+      );
+
+    }
+
+  );
+
+}
+
+
+/* =========================
+   SHARE REFERRAL LINK
+========================= */
+
+function shareMyReferral(){
+
+  if(
+    !currentReferralLink
+  ){
+
+    alert(
+      "Open the app from Telegram first."
+    );
+
+    return;
+
+  }
+
 
   const text =
-  "🚀 Join NET GAIN\n\n" +
-  "🎟️ Advance ID Booking Open\n" +
-  "💎 Booking: 12 USDT\n" +
-  "📅 Launch: 30 July 2026\n\n" +
-  link;
 
-  window.open(
-    "https://t.me/share/url?url=" +
-    encodeURIComponent(link) +
-    "&text=" +
-    encodeURIComponent(text)
+  "🚀 Join NET GAIN\n\n"
+
+  +
+
+  "🎟️ Advance ID Booking Open\n"
+
+  +
+
+  "💎 Booking: 12 USDT\n"
+
+  +
+
+  "📅 Launch: 30 July 2026 • 1:00 PM IST\n\n"
+
+  +
+
+  "Join with my referral link:";
+
+
+  const shareUrl =
+
+  "https://t.me/share/url?url="
+
+  +
+
+  encodeURIComponent(
+    currentReferralLink
+  )
+
+  +
+
+  "&text="
+
+  +
+
+  encodeURIComponent(
+    text
   );
+
+
+  if(
+    tg &&
+    tg.openTelegramLink
+  ){
+
+    tg.openTelegramLink(
+      shareUrl
+    );
+
+  }
+
+  else{
+
+    window.open(
+      shareUrl,
+      "_blank"
+    );
+
+  }
+
 }
 
 
-/* COPY WALLET */
+/* =========================
+   LAUNCH COUNTDOWN
+========================= */
+
+const launchDate =
+
+new Date(
+
+  "2026-07-30T13:00:00+05:30"
+
+)
+
+.getTime();
+
+
+setInterval(
+
+function(){
+
+
+  const now =
+  new Date()
+  .getTime();
+
+
+  const distance =
+  launchDate - now;
+
+
+  if(
+    distance <= 0
+  ){
+
+    document
+    .getElementById("days")
+    .innerHTML =
+    "00";
+
+
+    document
+    .getElementById("hours")
+    .innerHTML =
+    "00";
+
+
+    document
+    .getElementById("minutes")
+    .innerHTML =
+    "00";
+
+
+    document
+    .getElementById("seconds")
+    .innerHTML =
+    "00";
+
+
+    return;
+
+  }
+
+
+  document
+  .getElementById("days")
+  .innerHTML =
+
+  Math.floor(
+
+    distance
+
+    /
+
+    (
+      1000 *
+      60 *
+      60 *
+      24
+    )
+
+  );
+
+
+  document
+  .getElementById("hours")
+  .innerHTML =
+
+  Math.floor(
+
+    (
+      distance
+
+      %
+
+      (
+        1000 *
+        60 *
+        60 *
+        24
+      )
+    )
+
+    /
+
+    (
+      1000 *
+      60 *
+      60
+    )
+
+  );
+
+
+  document
+  .getElementById("minutes")
+  .innerHTML =
+
+  Math.floor(
+
+    (
+      distance
+
+      %
+
+      (
+        1000 *
+        60 *
+        60
+      )
+    )
+
+    /
+
+    (
+      1000 *
+      60
+    )
+
+  );
+
+
+  document
+  .getElementById("seconds")
+  .innerHTML =
+
+  Math.floor(
+
+    (
+      distance
+
+      %
+
+      (
+        1000 *
+        60
+      )
+    )
+
+    /
+
+    1000
+
+  );
+
+
+},
+
+1000
+
+);
+
+
+/* =========================
+   COPY WALLET
+========================= */
+
 function copyWallet(){
 
   const wallet =
-  document.getElementById("wallet")
-  .innerText.trim();
 
-  navigator.clipboard.writeText(wallet)
-  .then(function(){
-    alert("Wallet address copied!");
-  });
+  document
+  .getElementById("wallet")
+  .innerText
+  .trim();
+
+
+  navigator
+  .clipboard
+  .writeText(wallet)
+
+  .then(
+
+    function(){
+
+      alert(
+        "Wallet address copied!"
+      );
+
+    }
+
+  );
+
 }
+
+
+/* =========================
+   START APP
+========================= */
+
+initMember();
 
 </script>
 
