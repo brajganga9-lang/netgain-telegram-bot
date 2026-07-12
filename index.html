@@ -1,1 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NET GAIN | Coming Soon</title>
 
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Arial,sans-serif;
+  background:linear-gradient(180deg,#050816,#0d1024);
+  color:#fff;
+  min-height:100vh;
+}
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:25px 16px 50px;
+  text-align:center;
+}
+.logo{
+  width:90px;height:90px;
+  margin:10px auto 15px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:27px;
+  font-weight:800;
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+  box-shadow:0 0 35px rgba(124,58,237,.55);
+}
+h1{font-size:38px;letter-spacing:2px}
+.tagline{color:#aab4c8;margin:7px 0 22px}
+.badge{
+  display:inline-block;
+  padding:9px 16px;
+  border:1px solid #7c3aed;
+  border-radius:30px;
+  color:#c4b5fd;
+  margin-bottom:10px;
+}
+.card{
+  background:#111827;
+  border:1px solid #29344a;
+  border-radius:20px;
+  padding:22px 15px;
+  margin:18px 0;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
+}
+.card h2{margin-bottom:15px}
+.launch{
+  color:#22c55e;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+.countdown{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:7px;
+}
+.time-box{
+  background:#070c17;
+  padding:14px 3px;
+  border-radius:12px;
+}
+.time-box span{
+  display:block;
+  font-size:24px;
+  font-weight:bold;
+  color:#a78bfa;
+}
+.time-box small{font-size:9px;color:#94a3b8}
+.booking{
+  font-size:30px;
+  font-weight:800;
+  color:#fbbf24;
+  margin:10px 0;
+}
+.network{
+  display:inline-block;
+  background:#f0b90b;
+  color:#111;
+  font-weight:bold;
+  padding:7px 13px;
+  border-radius:20px;
+  margin:8px 0 15px;
+}
+.input{
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:1px solid #475569;
+  background:#080d18;
+  color:white;
+  margin:8px 0;
+  font-size:15px;
+}
+.address{
+  background:#050914;
+  border:1px dashed #475569;
+  padding:14px 10px;
+  border-radius:12px;
+  word-break:break-all;
+  font-size:13px;
+  margin:12px 0;
+  color:#dbeafe;
+}
+.btn{
+  display:block;
+  width:100%;
+  border:none;
+  padding:15px;
+  border-radius:12px;
+  margin-top:12px;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  text-decoration:none;
+}
+.primary{
+  background:linear-gradient(90deg,#7c3aed,#2563eb);
+  color:white;
+}
+.green{background:#16a34a;color:white}
+.telegram{background:#229ED9;color:white}
+.share{background:#f59e0b;color:#111}
+.ref-box{
+  background:#070c17;
+  border:1px solid #334155;
+  padding:12px;
+  border-radius:10px;
+  word-break:break-all;
+  font-size:13px;
+  margin-top:12px;
+}
+.sponsor{
+  color:#22c55e;
+  font-weight:bold;
+  margin:10px 0;
+}
+.warning{
+  font-size:12px;
+  color:#fca5a5;
+  line-height:1.5;
+  margin-top:15px;
+}
+.features{text-align:left;line-height:2;color:#d1d5db}
+.footer{color:#64748b;font-size:12px;margin-top:30px}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="logo">NG</div>
+  <h1>NET GAIN</h1>
+  <p class="tagline">A Decentralised Community</p>
+
+  <div class="badge">🚀 OFFICIAL LAUNCH COMING SOON</div>
+
+  <!-- COUNTDOWN -->
+  <div class="card">
+    <h2>⏳ Launch Countdown</h2>
+    <div class="launch">30 JULY 2026 • 1:00 PM IST</div>
+
+    <div class="countdown">
+      <div class="time-box">
+        <span id="days">00</span>
+        <small>DAYS</small>
+      </div>
+      <div class="time-box">
+        <span id="hours">00</span>
+        <small>HOURS</small>
+      </div>
+      <div class="time-box">
+        <span id="minutes">00</span>
+        <small>MINUTES</small>
+      </div>
+      <div class="time-box">
+        <span id="seconds">00</span>
+        <small>SECONDS</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- REFERRAL -->
+  <div class="card">
+    <h2>👥 Refer & Promote</h2>
+
+    <div id="sponsorText" class="sponsor">
+      Direct Visit • No Sponsor
+    </div>
+
+    <p>Enter your NET GAIN ID to create your promotion link.</p>
+
+    <input
+      class="input"
+      id="memberId"
+      placeholder="Example: NG00001"
+      maxlength="10"
+    >
+
+    <button class="btn primary" onclick="generateReferral()">
+      🔗 GENERATE REFERRAL LINK
+    </button>
+
+    <div class="ref-box" id="referralLink">
+      Your referral link will appear here.
+    </div>
+
+    <button class="btn share" onclick="copyReferral()">
+      📋 COPY REFERRAL LINK
+    </button>
+
+    <button class="btn green" onclick="shareTelegram()">
+      📤 SHARE ON TELEGRAM
+    </button>
+  </div>
+
+  <!-- BOOKING -->
+  <div class="card">
+    <h2>🎟️ Advance ID Booking</h2>
+
+    <p>Reserve your NET GAIN ID before official launch.</p>
+
+    <div class="booking">12 USDT</div>
+
+    <div class="network">
+      BNB SMART CHAIN • BEP20
+    </div>
+
+    <p>Send USDT (BEP20) only to:</p>
+
+    <div class="address" id="wallet">
+      0x5c2B762E077f39610D27C5FACf0317565513D23C
+    </div>
+
+    <button class="btn primary" onclick="copyWallet()">
+      📋 COPY WALLET ADDRESS
+    </button>
+
+    <p class="warning">
+      ⚠️ Send only USDT using the BEP20 (BNB Smart Chain) network.
+      Always verify the network and wallet address before payment.
+    </p>
+  </div>
+
+  <!-- PLAN -->
+  <div class="card">
+    <h2>🌍 NET GAIN</h2>
+
+    <div class="features">
+      ✓ Global Community<br>
+      ✓ Matrix Income<br>
+      ✓ Direct Income<br>
+      ✓ Level Income<br>
+      ✓ Unlimited Cycles<br>
+      ✓ Personal Referral Link
+    </div>
+  </div>
+
+  <a
+    class="btn telegram"
+    href="https://t.me/NetGainOfficialBot"
+  >
+    🤖 OPEN NET GAIN BOT
+  </a>
+
+  <div class="footer">
+    NET GAIN © 2026<br><br>
+    CONNECT • GROW • LEAD 🚀
+  </div>
+
+</div>
+
+<script>
+
+/* LAUNCH COUNTDOWN */
+const launchDate =
+new Date("2026-07-30T13:00:00+05:30").getTime();
+
+setInterval(function(){
+
+  const now = new Date().getTime();
+  const distance = launchDate - now;
+
+  if(distance <= 0){
+    document.getElementById("days").innerHTML="00";
+    document.getElementById("hours").innerHTML="00";
+    document.getElementById("minutes").innerHTML="00";
+    document.getElementById("seconds").innerHTML="00";
+    return;
+  }
+
+  document.getElementById("days").innerHTML =
+  Math.floor(distance/(1000*60*60*24));
+
+  document.getElementById("hours").innerHTML =
+  Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+
+  document.getElementById("minutes").innerHTML =
+  Math.floor((distance%(1000*60*60))/(1000*60));
+
+  document.getElementById("seconds").innerHTML =
+  Math.floor((distance%(1000*60))/1000);
+
+},1000);
+
+
+/* CAPTURE REFERRAL ID */
+const params = new URLSearchParams(window.location.search);
+const sponsor = params.get("ref");
+
+if(sponsor){
+  document.getElementById("sponsorText").innerText =
+  "✅ Referred By: " + sponsor.toUpperCase();
+}
+
+
+/* GENERATE REFERRAL LINK */
+function generateReferral(){
+
+  let id =
+  document.getElementById("memberId")
+  .value.trim().toUpperCase();
+
+  if(!/^NG\d{5}$/.test(id)){
+    alert("Please enter a valid ID like NG00001");
+    return;
+  }
+
+  const link =
+  window.location.origin +
+  window.location.pathname +
+  "?ref=" +
+  encodeURIComponent(id);
+
+  document.getElementById("referralLink").innerText = link;
+}
+
+
+/* COPY REFERRAL LINK */
+function copyReferral(){
+
+  const link =
+  document.getElementById("referralLink").innerText;
+
+  if(link.includes("will appear")){
+    alert("First generate your referral link.");
+    return;
+  }
+
+  navigator.clipboard.writeText(link)
+  .then(function(){
+    alert("Referral link copied!");
+  });
+}
+
+
+/* SHARE REFERRAL LINK */
+function shareTelegram(){
+
+  const link =
+  document.getElementById("referralLink").innerText;
+
+  if(link.includes("will appear")){
+    alert("First generate your referral link.");
+    return;
+  }
+
+  const text =
+  "🚀 Join NET GAIN\n\n" +
+  "🎟️ Advance ID Booking Open\n" +
+  "💎 Booking: 12 USDT\n" +
+  "📅 Launch: 30 July 2026\n\n" +
+  link;
+
+  window.open(
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(text)
+  );
+}
+
+
+/* COPY WALLET */
+function copyWallet(){
+
+  const wallet =
+  document.getElementById("wallet")
+  .innerText.trim();
+
+  navigator.clipboard.writeText(wallet)
+  .then(function(){
+    alert("Wallet address copied!");
+  });
+}
+
+</script>
+
+</body>
+</html>
