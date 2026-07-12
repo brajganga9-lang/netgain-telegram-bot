@@ -1,1 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NET GAIN | Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#050816,#0d1024);color:#fff;min-height:100vh}
+.wrap{max-width:1100px;margin:auto;padding:18px}
+h1{font-size:28px}.muted{color:#94a3b8}.hidden{display:none!important}
+.card{background:#111827;border:1px solid #29344a;border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:#070c17;border:1px solid #334155;border-radius:14px;padding:14px;color:#94a3b8}
+.stat strong{display:block;color:#a78bfa;font-size:22px;margin-top:7px;word-break:break-word}
+input,select,textarea{width:100%;padding:13px;border-radius:10px;border:1px solid #475569;background:#080d18;color:#fff;margin:6px 0;font-size:14px}
+button{border:0;border-radius:10px;padding:12px 14px;font-weight:bold;cursor:pointer}
+.btn{width:100%;margin-top:8px}.primary{background:linear-gradient(90deg,#7c3aed,#2563eb);color:#fff}.green{background:#16a34a;color:#fff}.red{background:#dc2626;color:#fff}.gray{background:#334155;color:#fff}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;overflow:auto;margin:14px 0}.tabs button{white-space:nowrap;background:#1e293b;color:#fff}.tabs button.active{background:#7c3aed}
+.table-wrap{overflow:auto;border-radius:12px;border:1px solid #29344a}
+table{width:100%;border-collapse:collapse;min-width:760px;background:#070c17}
+th,td{padding:11px;border-bottom:1px solid #29344a;text-align:left;font-size:12px}
+th{color:#c4b5fd}.status{padding:11px;border-radius:10px;background:#070c17;color:#cbd5e1;margin:10px 0;font-size:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:600px){.row{grid-template-columns:1fr}}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#1e293b;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section id="loginView" class="card" style="max-width:440px;margin:60px auto">
+<h1>🔐 NET GAIN Admin</h1>
+<p class="muted" style="margin:8px 0 16px">Authorized access only</p>
+<input id="email" type="email" placeholder="Admin email">
+<input id="password" type="password" placeholder="Password">
+<button class="btn primary" onclick="login()">LOGIN</button>
+<div id="loginMsg" class="status">Enter your admin credentials.</div>
+</section>
 
+<section id="adminView" class="hidden">
+<div class="top"><div><h1>NET GAIN Admin Panel</h1><p class="muted" id="adminIdentity"></p></div><button class="gray" onclick="logout()">Logout</button></div>
+<div class="tabs">
+<button class="active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+<button onclick="showTab('users',this)">👥 Users</button>
+<button onclick="showTab('funds',this)">💰 Fund Control</button>
+<button onclick="showTab('history',this)">📜 History</button>
+</div>
+
+<div id="dashboard" class="tab">
+<div class="grid">
+<div class="stat">TOTAL USERS<strong id="dUsers">0</strong></div>
+<div class="stat">ACTIVE USERS<strong id="dActive">0</strong></div>
+<div class="stat">TOTAL WALLET BALANCE<strong id="dBalance">0.00</strong></div>
+<div class="stat">TOTAL INCOME<strong id="dIncome">0.00</strong></div>
+<div class="stat">DIRECT INCOME<strong id="dDirect">0.00</strong></div>
+<div class="stat">LEVEL INCOME<strong id="dLevel">0.00</strong></div>
+<div class="stat">MATRIX INCOME<strong id="dMatrix">0.00</strong></div>
+</div>
+<div id="dashMsg" class="status">Loading dashboard...</div>
+</div>
+
+<div id="users" class="tab hidden">
+<div class="card">
+<h2>👥 Users</h2>
+<input id="userSearch" placeholder="Search Member ID, name or Telegram ID" oninput="renderUsers()">
+<div class="table-wrap"><table><thead><tr><th>Member</th><th>Name</th><th>Telegram</th><th>Sponsor</th><th>Status</th><th>Balance</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+</div>
+</div>
+
+<div id="funds" class="tab hidden">
+<div class="card" style="max-width:650px">
+<h2>💰 Manual Fund Control</h2>
+<p class="muted">Admin can add or deduct wallet balance. Income statistics are not changed.</p>
+<input id="fundMember" placeholder="Member ID e.g. NG00001">
+<button class="btn gray" onclick="lookupMember()">SEARCH MEMBER</button>
+<div id="memberPreview" class="status">Search a member first.</div>
+<div class="row">
+<select id="fundType"><option value="credit">➕ Add Fund</option><option value="debit">➖ Deduct Fund</option></select>
+<input id="fundAmount" type="number" min="0.01" step="0.01" placeholder="Amount USDT">
+</div>
+<textarea id="fundRemark" rows="3" placeholder="Reason / remark (required)"></textarea>
+<button class="btn green" onclick="submitFund()">CONFIRM FUND ACTION</button>
+<div id="fundMsg" class="status">No action submitted.</div>
+</div>
+</div>
+
+<div id="history" class="tab hidden">
+<div class="card">
+<h2>📜 Fund Adjustment History</h2>
+<button class="gray" onclick="loadHistory()">Refresh</button>
+<div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>Date</th><th>Member</th><th>Type</th><th>Amount</th><th>Before</th><th>After</th><th>Remark</th></tr></thead><tbody id="historyBody"></tbody></table></div>
+</div>
+</div>
+</section>
+</div>
+
+<script>
+const SUPABASE_URL="https://yigfsnuvfylggtmuqqep.supabase.co";
+const SUPABASE_KEY="sb_publishable_qt2MEjJV9wIgqdyyGQ6gMw_C2lvqsoQ";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let allUsers=[];
+
+function money(v){return Number(v||0).toFixed(2)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+
+async function login(){
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ const msg=document.getElementById("loginMsg"); msg.innerText="Logging in...";
+ const {data,error}=await db.auth.signInWithPassword({email,password});
+ if(error){msg.innerText="❌ "+error.message;return}
+ await enterAdmin(data.user);
+}
+async function enterAdmin(user){
+ const {data:isAdmin,error}=await db.rpc("is_netgain_admin");
+ if(error||!isAdmin){await db.auth.signOut();document.getElementById("loginMsg").innerText="❌ Admin access denied.";return}
+ document.getElementById("loginView").classList.add("hidden");
+ document.getElementById("adminView").classList.remove("hidden");
+ document.getElementById("adminIdentity").innerText=user.email||"Authorized Admin";
+ await Promise.all([loadDashboard(),loadUsers(),loadHistory()]);
+}
+async function logout(){await db.auth.signOut();location.reload()}
+function showTab(id,btn){
+ document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));
+ btn.classList.add("active");
+}
+async function loadDashboard(){
+ const msg=document.getElementById("dashMsg");
+ const [u,w]=await Promise.all([
+  db.from("users").select("id,status"),
+  db.from("wallets").select("balance,total_income,direct_income,level_income,matrix_income")
+ ]);
+ if(u.error||w.error){msg.innerText="❌ "+(u.error?.message||w.error?.message);return}
+ const users=u.data||[], wallets=w.data||[];
+ document.getElementById("dUsers").innerText=users.length;
+ document.getElementById("dActive").innerText=users.filter(x=>String(x.status).toLowerCase()==="active").length;
+ document.getElementById("dBalance").innerText=money(wallets.reduce((a,x)=>a+Number(x.balance||0),0))+" USDT";
+ document.getElementById("dIncome").innerText=money(wallets.reduce((a,x)=>a+Number(x.total_income||0),0))+" USDT";
+ document.getElementById("dDirect").innerText=money(wallets.reduce((a,x)=>a+Number(x.direct_income||0),0))+" USDT";
+ document.getElementById("dLevel").innerText=money(wallets.reduce((a,x)=>a+Number(x.level_income||0),0))+" USDT";
+ document.getElementById("dMatrix").innerText=money(wallets.reduce((a,x)=>a+Number(x.matrix_income||0),0))+" USDT";
+ msg.innerText="✅ Dashboard updated.";
+}
+async function loadUsers(){
+ const {data,error}=await db.from("users").select("id,member_id,telegram_id,telegram_username,full_name,sponsor_id,status,wallets(balance)").order("id",{ascending:false});
+ if(error){console.error(error);return}
+ allUsers=data||[]; renderUsers();
+}
+function renderUsers(){
+ const q=document.getElementById("userSearch").value.trim().toLowerCase();
+ const rows=allUsers.filter(x=>[x.member_id,x.full_name,x.telegram_id,x.telegram_username].some(v=>String(v||"").toLowerCase().includes(q)));
+ document.getElementById("usersBody").innerHTML=rows.map(x=>`<tr><td><b>${esc(x.member_id)}</b></td><td>${esc(x.full_name||"-")}</td><td>${esc(x.telegram_username||x.telegram_id||"-")}</td><td>${esc(x.sponsor_id||"Direct")}</td><td><span class="badge">${esc(x.status||"-")}</span></td><td>${money(x.wallets?.balance)} USDT</td></tr>`).join("")||'<tr><td colspan="6">No users found.</td></tr>';
+}
+async function lookupMember(){
+ const id=document.getElementById("fundMember").value.trim().toUpperCase();
+ const {data,error}=await db.from("users").select("id,member_id,full_name,status,wallets(balance)").eq("member_id",id).maybeSingle();
+ const box=document.getElementById("memberPreview");
+ if(error||!data){box.innerText="❌ Member not found.";return}
+ box.innerHTML=`✅ <b>${esc(data.member_id)}</b> | ${esc(data.full_name||"-")} | Balance: <b>${money(data.wallets?.balance)} USDT</b>`;
+}
+async function submitFund(){
+ const member=document.getElementById("fundMember").value.trim().toUpperCase();
+ const type=document.getElementById("fundType").value;
+ const amount=Number(document.getElementById("fundAmount").value);
+ const remark=document.getElementById("fundRemark").value.trim();
+ const msg=document.getElementById("fundMsg");
+ if(!/^NG\d{5}$/.test(member)){msg.innerText="❌ Enter valid Member ID.";return}
+ if(!amount||amount<=0){msg.innerText="❌ Enter valid amount.";return}
+ if(remark.length<3){msg.innerText="❌ Remark is required.";return}
+ const action=type==="credit"?"ADD":"DEDUCT";
+ if(!confirm(`${action} ${amount.toFixed(2)} USDT ${type==="credit"?"to":"from"} ${member}?`))return;
+ msg.innerText="Processing...";
+ const {data,error}=await db.rpc("admin_manual_fund_transfer",{p_member_id:member,p_amount:amount,p_transfer_type:type,p_remark:remark});
+ if(error){msg.innerText="❌ "+error.message;return}
+ msg.innerText=`✅ Success. New balance: ${money(data?.balance_after)} USDT`;
+ document.getElementById("fundAmount").value="";
+ document.getElementById("fundRemark").value="";
+ await Promise.all([loadDashboard(),loadUsers(),loadHistory(),lookupMember()]);
+}
+async function loadHistory(){
+ const {data,error}=await db.from("admin_fund_transfers").select("*").order("created_at",{ascending:false}).limit(200);
+ if(error){document.getElementById("historyBody").innerHTML=`<tr><td colspan="7">❌ ${esc(error.message)}</td></tr>`;return}
+ document.getElementById("historyBody").innerHTML=(data||[]).map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td><b>${esc(x.member_id)}</b></td><td>${x.transfer_type==="credit"?"➕ ADD":"➖ DEDUCT"}</td><td>${money(x.amount)}</td><td>${money(x.balance_before)}</td><td>${money(x.balance_after)}</td><td>${esc(x.remark)}</td></tr>`).join("")||'<tr><td colspan="7">No history yet.</td></tr>';
+}
+(async()=>{
+ const {data:{session}}=await db.auth.getSession();
+ if(session?.user)await enterAdmin(session.user);
+})();
+</script>
+</body>
+</html>
