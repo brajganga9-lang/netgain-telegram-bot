@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NET GAIN | Official Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:linear-gradient(180deg,#050816,#0d1024);color:#fff;min-height:100vh}.container{max-width:500px;margin:auto;padding:20px 14px 60px;text-align:center}.logo{width:90px;height:90px;margin:10px auto 15px;border-radius:50%;display:block;object-fit:cover;box-shadow:0 0 35px rgba(124,58,237,.55)}h1{font-size:36px;letter-spacing:2px}.tagline{color:#aab4c8;margin:7px 0 20px}.badge{display:inline-block;padding:9px 16px;border:1px solid #7c3aed;border-radius:30px;color:#c4b5fd;margin-bottom:10px}.card{background:#111827;border:1px solid #29344a;border-radius:20px;padding:20px 14px;margin:16px 0;box-shadow:0 10px 30px rgba(0,0,0,.3)}.card h2{margin-bottom:15px}.status{padding:11px;border-radius:10px;background:#070c17;color:#cbd5e1;margin:10px 0;font-size:13px}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}.stat{background:#070c17;border:1px solid #334155;border-radius:14px;padding:14px 7px;font-size:12px;color:#94a3b8}.stat strong{display:block;font-size:18px;color:#a78bfa;margin-top:7px;word-break:break-word}.balance{font-size:34px;font-weight:800;color:#22c55e;margin:10px 0}.input{width:100%;padding:14px;border-radius:11px;border:1px solid #475569;background:#080d18;color:#fff;margin:7px 0;font-size:14px}.btn{display:block;width:100%;border:none;padding:14px;border-radius:12px;margin-top:10px;font-size:14px;font-weight:bold;cursor:pointer;text-decoration:none}.primary{background:linear-gradient(90deg,#7c3aed,#2563eb);color:#fff}.green{background:#16a34a;color:#fff}.orange{background:#f59e0b;color:#111}.blue{background:#229ED9;color:#fff}.ref-box,.address{background:#050914;border:1px dashed #475569;padding:13px 9px;border-radius:11px;word-break:break-all;font-size:12px;margin:10px 0;color:#dbeafe}.network{display:inline-block;background:#f0b90b;color:#111;font-weight:bold;padding:7px 13px;border-radius:20px;margin:8px 0 12px}.booking-price{font-size:32px;font-weight:800;color:#fbbf24;margin:10px 0}.progress{width:100%;height:12px;background:#050914;border-radius:20px;overflow:hidden;margin:12px 0}.progress-bar{height:100%;width:0;background:linear-gradient(90deg,#7c3aed,#22c55e);transition:.3s}.matrix-flow{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:5px;margin:15px 0}.stage{min-width:48px;padding:10px 5px;border-radius:10px;background:#070c17;border:1px solid #334155;font-size:11px}.stage.active{border-color:#22c55e;color:#22c55e}.stage.done{background:#14532d;color:#fff}.arrow{color:#64748b}.plan-box{text-align:left;background:#070c17;border-radius:14px;padding:15px;margin:10px 0;line-height:1.8;color:#d1d5db}.plan-title{color:#a78bfa;font-weight:bold;font-size:17px;margin-bottom:8px}.history-item{text-align:left;background:#070c17;border:1px solid #29344a;border-radius:12px;padding:12px;margin:8px 0;font-size:12px}.history-item strong{color:#22c55e}.timer{font-size:28px;font-weight:800;color:#fbbf24;margin:12px 0}.warning{font-size:11px;color:#fca5a5;line-height:1.5;margin-top:12px}.footer{color:#64748b;font-size:11px;margin-top:30px;line-height:1.6}
+
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,500px);z-index:999;background:rgba(7,12,23,.97);border-top:1px solid #334155;display:grid;grid-template-columns:repeat(5,1fr);padding:7px 4px calc(7px + env(safe-area-inset-bottom));box-shadow:0 -8px 25px rgba(0,0,0,.35)}
+.bottom-nav button{background:none;border:0;color:#94a3b8;font-size:10px;padding:5px 2px;cursor:pointer}.bottom-nav button span{display:block;font-size:20px;margin-bottom:3px}.bottom-nav button.active{color:#a78bfa}
+.container{padding-bottom:95px}
+
+
+.launch-card{background:linear-gradient(135deg,#17102f,#0b1730);border-color:#7c3aed}.launch-date{font-size:25px;font-weight:800;color:#fbbf24;margin:8px 0}.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0}.countdown div{background:#050914;border:1px solid #334155;border-radius:12px;padding:12px 4px}.countdown strong{display:block;font-size:23px;color:#a78bfa}.countdown span{font-size:10px;color:#94a3b8}.coin-balance{font-size:30px;font-weight:800;color:#fbbf24;margin:10px 0}.locked{display:inline-block;padding:7px 12px;border-radius:20px;background:#3f1d2e;color:#fda4af;font-size:12px;font-weight:bold}.task{display:flex;justify-content:space-between;align-items:center;text-align:left;background:#070c17;border:1px solid #29344a;border-radius:12px;padding:12px;margin:8px 0;gap:8px}.task b{color:#fbbf24}.mini-btn{border:0;border-radius:9px;padding:8px 10px;font-weight:bold;cursor:pointer;background:#7c3aed;color:#fff}
+</style>
+</head>
+<body>
+<div class="container">
+<img class="logo" src="file_00000000b2e47208b176665a10ebef91.png" alt="NET GAIN Logo">
+<h1>NET GAIN</h1><p class="tagline">A Decentralised Community</p><div class="badge">🚀 CONNECT • GROW • LEAD</div>
+<div class="card launch-card" id="launchSection"><h2>🚀 NET GAIN OFFICIAL LAUNCH</h2><div class="launch-date">30 JULY 2026</div><div class="countdown"><div><strong id="cdDays">00</strong><span>DAYS</span></div><div><strong id="cdHours">00</strong><span>HOURS</span></div><div><strong id="cdMinutes">00</strong><span>MINUTES</span></div><div><strong id="cdSeconds">00</strong><span>SECONDS</span></div></div><div id="launchMessage" class="status">Pre-launch booking is open. Matrix income starts only after official launch processing.</div></div>
+<div class="card">
+<h2>🔗 Connect Web3 Wallet</h2>
+<div class="status">Connect a compatible Web3 wallet such as Trust Wallet. Connection only reads your public wallet address. Never share your seed phrase or private key.</div>
+<button id="connectWalletBtn" class="btn primary" onclick="connectWeb3Wallet()">🔗 CONNECT WALLET</button>
+<div id="connectedWalletStatus" class="status">Wallet not connected.</div>
+</div>
+<div class="card"><h2>👑 Pre-Launch Matrix Booking</h2><div class="booking-price">12 USDT</div><div class="status">Keep funds ready or submit a verified pre-launch booking. Matrix income is processed only through the official activation system.</div><div class="plan-box">🔄 Matrix — 7.00 USDT<br>🤝 Direct — 3.50 USDT<br>👥 5-Level — 1.00 USDT<br>🏦 Creator Fund — 0.50 USDT</div><button class="btn primary" onclick="navTo('activationCard',document.querySelectorAll('.bottom-nav button')[2])">⚡ GO TO BOOKING / ACTIVATION</button><p class="warning">Pre-launch booking does not guarantee profit or a specific income position.</p></div>
+<div class="card" id="airdropSection"><h2>🪙 NET GAIN Airdrop</h2><div class="coin-balance"><span id="airdropCoins">0</span> / 10,000 COINS</div><div class="locked">🔒 PRE-LAUNCH • LOCKED</div><div class="status">Coin Launch: Coming Soon 🚀<br>No withdrawal, transfer, trading or USDT conversion is available now.</div><div class="task"><div>🎁 Registration Reward<br><b>+1,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('registration')">CLAIM</button></div><div class="task"><div>📣 Community Task<br><b>+1,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('community')">COMING</button></div><div class="task"><div>📅 Activity Rewards<br><b>Up to 2,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('activity')">COMING</button></div><div class="task"><div>👥 Referral Milestones<br><b>Up to 2,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('referral')">COMING</button></div><div class="task"><div>🌍 Social Tasks<br><b>Up to 2,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('social')">COMING</button></div><div class="task"><div>🚀 Launch Participation<br><b>Up to 2,000 Coins</b></div><button class="mini-btn" onclick="claimAirdropTask('launch')">COMING</button></div></div>
+<div class="card"><h2>📊 Tokenomics</h2><div class="plan-box"><div class="plan-title">Total Supply — 10 Billion Coins</div>🎁 Community Airdrop — 10% (1 Billion)<br>⛏️ Work & Activity — 25% (2.5 Billion)<br>🔄 Ecosystem & Matrix — 15% (1.5 Billion)<br>💧 Liquidity — 15% (1.5 Billion)<br>📣 Marketing & Community — 10% (1 Billion)<br>🏦 Treasury & Development — 10% (1 Billion)<br>🔒 Reserve — 10% (1 Billion)<br>👥 Team — 5% (500 Million)</div><p class="warning">Airdrop coins are promotional pre-launch rewards. Future utility, transferability and launch terms may change. No monetary value is guaranteed.</p></div>
+
+
+<div class="card" id="homeSection"><h2>👤 My Dashboard</h2><div id="appStatus" class="status">Connecting with Telegram...</div><div id="dashboardData" class="hidden"><div class="grid"><div class="stat">🆔 MEMBER ID<strong id="memberId">--</strong></div><div class="stat">🤝 SPONSOR<strong id="sponsorId">Direct</strong></div><div class="stat">👤 DIRECT<strong id="totalDirect">0</strong></div><div class="stat">👥 TOTAL TEAM<strong id="totalTeam">0</strong></div></div></div></div>
+
+<div class="card" id="walletSection"><h2>💰 My Wallet</h2><div class="balance"><span id="balance">0.00</span> USDT</div>
+<button id="walletActivateBtn" class="btn green" onclick="activateFromFundWallet()">⚡ ACTIVATE WITH FUND WALLET • 12 USDT</button>
+<div id="walletActivationMsg" class="status">Use your Fund Wallet balance for instant activation.</div><div class="grid"><div class="stat">TOTAL INCOME<strong id="totalIncome">0.00</strong></div><div class="stat">DIRECT INCOME<strong id="directIncome">0.00</strong></div><div class="stat">LEVEL INCOME<strong id="levelIncome">0.00</strong></div><div class="stat">MATRIX INCOME<strong id="matrixIncome">0.00</strong></div></div></div>
+
+
+<div class="card"><h2>🟢 Account Activation</h2>
+<div id="accountActivationStatus" class="status">Checking activation status...</div>
+<button id="goActivationBtn" class="btn green" onclick="scrollToActivation()">ACTIVATE ID • 12 USDT</button>
+</div>
+
+<div class="card"><h2>⚡ Today's Activation</h2><div class="booking-price"><span id="todayActivation">0</span> / 5</div><div class="progress"><div id="activationProgress" class="progress-bar"></div></div><p>Maximum 5 verified activations per day.</p></div>
+
+<div class="card" id="teamSection"><h2>🔗 Refer & Promote</h2><div id="myReferralLink" class="ref-box">Referral link loading...</div><button class="btn orange" onclick="copyReferral()">📋 COPY REFERRAL LINK</button><button class="btn green" onclick="shareReferral()">📤 SHARE & PROMOTE</button></div>
+<div class="card" id="networkSection"><h2>👥 Downline Network</h2><div id="downlineNetwork"><div class="status">Loading your network...</div></div></div>
+
+<div class="card"><h2>🔒 Global Matrix • Temporarily Locked</h2><div class="locked">🔒 PAYOUT ENGINE LOCKED FOR FINAL TESTING</div><div class="grid"><div class="stat">CURRENT CYCLE<strong id="matrixCycle">--</strong></div><div class="stat">CURRENT STAGE<strong id="matrixStage">Waiting</strong></div><div class="stat">MATRIX EARNED<strong id="cycleIncome">0.00</strong></div><div class="stat">RECYCLE<strong id="recycleCount">0</strong></div></div><div class="matrix-flow"><div id="stage1" class="stage">👤<br>U1<br>7 USDT</div><span class="arrow">→</span><div id="stage2" class="stage">👤<br>U2<br>7 USDT</div><span class="arrow">→</span><div id="stage3" class="stage">👤<br>U3<br>7 USDT</div><span class="arrow">→</span><div class="stage">♻️<br>AUTO<br>RECYCLE</div></div><div class="status">Matrix Progress: <strong id="matrixProgress">0/3</strong></div></div>
+
+<div class="card" id="activationCard"><h2>🎟️ Activate Package</h2><p>Package Amount</p><div class="booking-price">12 USDT</div><div class="network">BNB SMART CHAIN • BEP20</div><p>Send 12 USDT to:</p><div class="address" id="companyWallet">0x5c2B762E077f39610D27C5FACf0317565513D23C</div><button class="btn primary" onclick="copyCompanyWallet()">📋 COPY PAYMENT ADDRESS</button><input id="paymentWallet" class="input" placeholder="Your sending wallet address (optional)"><input id="paymentTxid" class="input" placeholder="Enter payment TXID / Transaction Hash"><button id="submitBookingBtn" class="btn green" onclick="submitBooking()">✅ SUBMIT PAYMENT</button><div id="bookingMessage" class="status">Submit your TXID after sending 12 USDT.</div><p class="warning">⚠️ Send only USDT on BNB Smart Chain (BEP20). Payment is activated only after verification.</p></div>
+
+<div class="card"><h2>🔒 Withdrawal • Temporarily Locked</h2><div class="locked">🔒 WITHDRAWAL LOCKED</div><div id="withdrawStatus" class="status">Withdrawals are temporarily unavailable during pre-launch testing. Existing balances and records remain unchanged.</div><div id="withdrawTimerBox" class="hidden"><div id="withdrawTimer" class="timer">LOCKED</div></div></div>
+
+<div class="card"><h2>📜 Income History</h2><div id="incomeHistory"><div class="status">No income history yet.</div></div></div>
+<div class="card"><h2>💸 Withdrawal History</h2><div id="withdrawalHistory"><div class="status">No withdrawal history yet.</div></div></div>
+
+<div class="card" id="profileSection"><h2>📊 NET GAIN Official Plan</h2>
+<div class="plan-box"><div class="plan-title">💎 Joining Package</div>12 USDT per activation<br>Maximum 5 verified activations per day</div>
+<div class="plan-box"><div class="plan-title">💰 12 USDT Distribution</div>🔄 Global Matrix Allocation — 7 USDT<br>🤝 Direct Income — 3.50 USDT<br>👥 5-Level Bonus — 1.00 USDT<br>🏦 Creator Fund — 0.50 USDT<br><br><b>Total — 12 USDT</b></div>
+<div class="plan-box"><div class="plan-title">🤝 Direct Income</div>Every eligible direct activation:<br><b>3.50 USDT</b></div>
+<div class="plan-box"><div class="plan-title">👥 5-Level Bonus</div>Level 1 — 0.30 USDT<br>Level 2 — 0.20 USDT<br>Level 3 — 0.20 USDT<br>Level 4 — 0.15 USDT<br>Level 5 — 0.15 USDT<br><br><b>Total — 1.00 USDT</b></div>
+<div class="plan-box"><div class="plan-title">🔄 Global FIFO Matrix</div>👤 U1 — 7 USDT → 👤 U2 — 7 USDT → 👤 U3 — 7 USDT → ♻️ Auto Recycle<br><br>Matrix Progress: 0/3 → 1/3 → 2/3 → 3/3<br><br>Gross cycle flow: 21 USDT<br><b>14 USDT user allocation + 7 USDT recycle</b><br><br>🔒 Matrix payout engine is temporarily locked for final testing.</div>
+<div class="plan-box"><div class="plan-title">💸 Withdrawal</div>🔒 Temporarily Locked During Pre-Launch Testing<br>Network — BEP20</div>
+</div>
+
+<a class="btn blue" href="https://t.me/NetGainOfficialBot">🤖 OPEN NET GAIN BOT</a>
+<div class="footer">NET GAIN © 2026<br><br>CONNECT • GROW • LEAD 🚀<br><br>Earnings depend on actual network activity, eligibility and completed matrix events. No income is guaranteed.</div>
+</div>
+
+<script>
+const SUPABASE_URL="https://yigfsnuvfylggtmuqqep.supabase.co";
+const SUPABASE_KEY="sb_publishable_qt2MEjJV9wIgqdyyGQ6gMw_C2lvqsoQ";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const tg=window.Telegram&&window.Telegram.WebApp?window.Telegram.WebApp:null;
+if(tg){tg.ready();tg.expand()}
+let telegramUser=null,currentMember=null,referralLink="",withdrawalTimerInterval=null;
+const params=new URLSearchParams(window.location.search);
+let sponsor=(params.get("ref")||"").trim().toUpperCase();
+if(!sponsor&&tg&&tg.initDataUnsafe&&tg.initDataUnsafe.start_param){sponsor=String(tg.initDataUnsafe.start_param).trim().toUpperCase()}
+if(!/^NG\d{5}$/.test(sponsor)){sponsor=null}
+
+
+const LAUNCH_AT=Date.parse("2026-07-30T12:30:00+05:30");
+function updateLaunchCountdown(){const d=LAUNCH_AT-Date.now();if(d<=0){["cdDays","cdHours","cdMinutes","cdSeconds"].forEach(id=>document.getElementById(id).innerText="00");document.getElementById("launchMessage").innerText="🚀 Launch date has arrived. Processing remains subject to live system rules.";return}document.getElementById("cdDays").innerText=String(Math.floor(d/86400000)).padStart(2,"0");document.getElementById("cdHours").innerText=String(Math.floor((d%86400000)/3600000)).padStart(2,"0");document.getElementById("cdMinutes").innerText=String(Math.floor((d%3600000)/60000)).padStart(2,"0");document.getElementById("cdSeconds").innerText=String(Math.floor((d%60000)/1000)).padStart(2,"0")}
+setInterval(updateLaunchCountdown,1000);updateLaunchCountdown();
+async function loadAirdropBalance(){if(!currentMember)return;const {data,error}=await db.rpc("get_airdrop_balance",{p_user_id:currentMember.id});if(!error)document.getElementById("airdropCoins").innerText=Number(data||0).toLocaleString()}
+async function claimAirdropTask(taskCode){
+ if(taskCode!=="registration"){alert("This task is coming soon.");return}
+ if(!currentMember){alert("Account not loaded. Please open from the NET GAIN Telegram Bot.");return}
+ const buttons=[...document.querySelectorAll(".mini-btn")];
+ const btn=buttons.find(b=>b.getAttribute("onclick")==="claimAirdropTask('registration')");
+ if(btn){btn.disabled=true;btn.innerText="CLAIMING..."}
+ try{
+   const {data,error}=await db.rpc("claim_airdrop_task",{p_user_id:currentMember.id,p_task_code:taskCode});
+   if(error)throw error;
+   await loadAirdropBalance();
+   if(btn)btn.innerText="CLAIMED";
+   alert("✅ "+((data&&data.message)?data.message:"Registration reward processed."));
+ }catch(e){
+   if(btn){btn.disabled=false;btn.innerText="CLAIM"}
+   alert("❌ "+(e&&e.message?e.message:"Airdrop claim failed."));
+ }
+}
+
+const WALLETCONNECT_PROJECT_ID="96739cd0cb20b64c24983727c04525a2";
+let walletConnectProvider=null;
+function getWeb3Provider(){
+ const eth=window.ethereum;
+ if(!eth)return null;
+ if(Array.isArray(eth.providers)&&eth.providers.length){
+   return eth.providers.find(p=>p.isTrust)||eth.providers.find(p=>p.isMetaMask)||eth.providers.find(p=>p.isOkxWallet)||eth.providers[0];
+ }
+ return eth;
+}
+function showConnectedWallet(address){
+ if(!address)return;
+ const btn=document.getElementById("connectWalletBtn");
+ const box=document.getElementById("connectedWalletStatus");
+ const short=address.slice(0,6)+"..."+address.slice(-4);
+ box.innerText="✅ Connected: "+short;
+ btn.disabled=false;btn.innerText="✅ WALLET CONNECTED";
+ localStorage.setItem("netgain_connected_wallet",address);
+ const paymentWallet=document.getElementById("paymentWallet");
+ if(paymentWallet&&!paymentWallet.value)paymentWallet.value=address;
+}
+async function getWalletConnectProvider(){
+ if(walletConnectProvider)return walletConnectProvider;
+ let mod;
+ try{
+   mod=await import("https://esm.sh/@walletconnect/ethereum-provider@2.21.1?bundle");
+ }catch(e){
+   console.error("WalletConnect module load error:",e);
+   throw new Error("WalletConnect could not load. Please check internet and try again.");
+ }
+ const EthereumProvider=mod.default||mod.EthereumProvider;
+ if(!EthereumProvider||!EthereumProvider.init){
+   throw new Error("WalletConnect provider is unavailable.");
+ }
+ walletConnectProvider=await EthereumProvider.init({
+   projectId:WALLETCONNECT_PROJECT_ID,
+   chains:[56],
+   optionalChains:[1,137,42161,10,8453],
+   showQrModal:true,
+   metadata:{
+     name:"NET GAIN",
+     description:"NET GAIN Web3 Wallet Connection",
+     url:window.location.origin,
+     icons:[]
+   }
+ });
+ return walletConnectProvider;
+}
+async function connectWeb3Wallet(){
+ const btn=document.getElementById("connectWalletBtn");
+ const box=document.getElementById("connectedWalletStatus");
+ try{
+   btn.disabled=true;btn.innerText="CONNECTING...";
+   let provider=getWeb3Provider(),accounts;
+   if(provider){
+     accounts=await provider.request({method:"eth_requestAccounts"});
+   }else{
+     provider=await getWalletConnectProvider();
+     await provider.connect();
+     accounts=provider.accounts||await provider.request({method:"eth_accounts"});
+   }
+   if(!accounts||!accounts[0])throw new Error("No wallet account returned.");
+   showConnectedWallet(accounts[0]);
+ }catch(e){
+   console.error(e);
+   box.innerText="❌ "+(e&&e.message?e.message:"Wallet connection cancelled.");
+   btn.disabled=false;btn.innerText="🔗 CONNECT WALLET";
+ }
+}
+async function restoreWeb3Wallet(){
+ try{
+   const provider=getWeb3Provider();
+   if(provider){
+     const accounts=await provider.request({method:"eth_accounts"});
+     if(accounts&&accounts[0])showConnectedWallet(accounts[0]);
+     return;
+   }
+   if(localStorage.getItem("netgain_connected_wallet")){
+     const wcProvider=await getWalletConnectProvider();
+     if(wcProvider.session&&wcProvider.accounts&&wcProvider.accounts[0])showConnectedWallet(wcProvider.accounts[0]);
+   }
+ }catch(e){console.error("Wallet restore failed:",e)}
+}
+restoreWeb3Wallet();
+startApp();
+</script>
+
+<nav class="bottom-nav">
+<button class="active" onclick="navTo('homeSection',this)"><span>🏠</span>Home</button>
+<button onclick="navTo('walletSection',this)"><span>💰</span>Wallet</button>
+<button onclick="navTo('activationCard',this)"><span>⚡</span>Activate</button>
+<button onclick="navTo('teamSection',this)"><span>👥</span>Team</button>
+<button onclick="navTo('profileSection',this)"><span>👤</span>Profile</button>
+</nav>
+
+</body>
+</html>
