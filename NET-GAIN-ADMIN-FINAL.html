@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NET GAIN | Admin Panel</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#050816,#0d1024);color:#fff;min-height:100vh}
+.wrap{max-width:1200px;margin:auto;padding:14px}.hidden{display:none!important}.card{background:#111827;border:1px solid #29344a;border-radius:18px;padding:16px;margin:12px 0}
+h1,h2{margin:0 0 12px}.muted{color:#94a3b8}.status{background:#070c17;border-radius:10px;padding:11px;margin:9px 0;color:#cbd5e1}
+input,select,textarea{width:100%;padding:12px;margin:5px 0;border:1px solid #475569;border-radius:10px;background:#080d18;color:#fff}
+button{border:0;border-radius:10px;padding:11px 13px;font-weight:700;cursor:pointer}.btn{width:100%;margin-top:7px}.primary{background:#7c3aed;color:#fff}.green{background:#16a34a;color:#fff}.red{background:#dc2626;color:#fff}.gray{background:#334155;color:#fff}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.tabs{display:flex;gap:7px;overflow:auto;padding:4px 0}.tabs button{white-space:nowrap;background:#1e293b;color:#fff}.tabs button.active{background:#7c3aed}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:9px}.stat{background:#070c17;border:1px solid #334155;border-radius:13px;padding:13px;color:#94a3b8}.stat strong{display:block;color:#a78bfa;font-size:20px;margin-top:6px}
+.table{overflow:auto;border:1px solid #29344a;border-radius:12px}table{width:100%;border-collapse:collapse;min-width:850px;background:#070c17}th,td{padding:10px;border-bottom:1px solid #29344a;text-align:left;font-size:12px}th{color:#c4b5fd}
+.actions{display:flex;gap:5px;flex-wrap:wrap}.actions button{padding:7px 9px;font-size:11px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}@media(max-width:600px){.row{grid-template-columns:1fr}}
+.badge{padding:4px 8px;border-radius:20px;background:#1e293b;font-size:11px}
+</style>
+</head>
+<body><div class="wrap">
+<section id="login" class="card" style="max-width:430px;margin:60px auto">
+<h1>🔐 NET GAIN Admin</h1><p class="muted">Authorized access only</p>
+<input id="email" type="email" placeholder="Admin email"><input id="password" type="password" placeholder="Password">
+<button class="btn primary" onclick="login()">LOGIN</button><div id="loginMsg" class="status">Enter admin credentials.</div>
+</section>
+
+<section id="panel" class="hidden">
+<div class="top"><div><h1>NET GAIN Admin</h1><span id="who" class="muted"></span></div><button class="gray" onclick="logout()">Logout</button></div>
+<div class="tabs">
+<button class="active" onclick="tab('dashboard',this)">📊 Dashboard</button>
+<button onclick="tab('users',this)">👥 Users</button>
+<button onclick="tab('payments',this)">💳 Payments</button>
+<button onclick="tab('withdrawals',this)">💸 Withdrawals</button>
+<button onclick="tab('funds',this)">💰 Fund Control</button>
+<button onclick="tab('history',this)">📜 Fund History</button>
+<button onclick="tab('airdrop',this);loadAirdrops()">🪙 Airdrop</button>
+</div>
+
+<div id="dashboard" class="view"><div class="grid">
+<div class="stat">USERS<strong id="dUsers">0</strong></div><div class="stat">ACTIVE<strong id="dActive">0</strong></div>
+<div class="stat">PENDING PAYMENTS<strong id="dPay">0</strong></div><div class="stat">PENDING WITHDRAWALS<strong id="dWd">0</strong></div>
+<div class="stat">TOTAL BALANCE<strong id="dBal">0.00</strong></div><div class="stat">TOTAL INCOME<strong id="dInc">0.00</strong></div>
+</div><div id="dashMsg" class="status">Loading...</div></div>
+
+<div id="users" class="view hidden"><div class="card"><h2>👥 Users</h2><input id="userQ" placeholder="Search NG ID / name / Telegram ID" oninput="renderUsers()">
+<div class="table"><table><thead><tr><th>Member</th><th>Name</th><th>Telegram</th><th>Sponsor</th><th>Status</th><th>Balance</th><th>Action</th></tr></thead><tbody id="usersBody"></tbody></table></div></div></div>
+
+<div id="payments" class="view hidden"><div class="card"><div class="top"><h2>💳 Payment / Booking History</h2><button class="gray" onclick="loadBookings()">Refresh</button></div>
+<div class="table"><table><thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Network</th><th>TXID</th><th>From Wallet</th><th>Status</th><th>Action</th></tr></thead><tbody id="bookingBody"></tbody></table></div>
+<div class="status">Verified blockchain payments should be activated through the secure verification/activation flow. Manual activation uses the existing admin activation RPC when a booking ID and TXID are available.</div>
+</div></div>
+
+<div id="withdrawals" class="view hidden"><div class="card"><div class="top"><h2>💸 Withdrawals</h2><button class="gray" onclick="loadWithdrawals()">Refresh</button></div>
+<div class="table"><table><thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Wallet</th><th>Network</th><th>Status</th><th>TXID</th><th>Action</th></tr></thead><tbody id="withdrawBody"></tbody></table></div>
+<div class="status">Approve/Reject buttons require secure database RPCs. If those RPCs are not installed yet, the panel will show the exact database error instead of exposing a secret key.</div>
+</div></div>
+
+<div id="funds" class="view hidden"><div class="card" style="max-width:650px"><h2>💰 Manual Fund Control</h2>
+<input id="fundMember" placeholder="Member ID e.g. NG00001"><button class="btn gray" onclick="lookup()">SEARCH MEMBER</button><div id="preview" class="status">Search a member.</div>
+<div class="row"><select id="fundType"><option value="credit">➕ Add Fund</option><option value="debit">➖ Deduct Fund</option></select><input id="fundAmount" type="number" step=".01" min=".01" placeholder="Amount USDT"></div>
+<textarea id="fundRemark" rows="3" placeholder="Reason / remark"></textarea><button class="btn green" onclick="fund()">CONFIRM</button><div id="fundMsg" class="status">No action submitted.</div>
+</div></div>
+
+<div id="history" class="view hidden"><div class="card"><div class="top"><h2>📜 Fund History</h2><button class="gray" onclick="loadHistory()">Refresh</button></div>
+<div class="table"><table><thead><tr><th>Date</th><th>Member</th><th>Type</th><th>Amount</th><th>Before</th><th>After</th><th>Remark</th></tr></thead><tbody id="histBody"></tbody></table></div></div></div>
+
+<div id="airdrop" class="view hidden"><div class="card">
+<div class="top"><h2>🪙 Airdrop Management</h2><button class="gray" onclick="loadAirdrops()">Refresh</button></div>
+<div class="grid">
+<div class="stat">TOTAL CLAIMS<strong id="aClaims">0</strong></div>
+<div class="stat">COINS ALLOCATED<strong id="aCoins">0</strong></div>
+</div>
+<div class="table"><table><thead><tr><th>Date</th><th>User ID</th><th>Task</th><th>Coins</th></tr></thead><tbody id="airdropBody"></tbody></table></div>
+<div class="status">Airdrop coins are pre-launch and locked. This panel does not provide coin withdrawal, transfer, trading or USDT conversion.</div>
+</div></div>
+</section></div>
+
+<script>
+const SUPABASE_URL="https://yigfsnuvfylggtmuqqep.supabase.co";
+const SUPABASE_KEY="sb_publishable_qt2MEjJV9wIgqdyyGQ6gMw_C2lvqsoQ";
+const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+let users=[]; const $=id=>document.getElementById(id); const money=v=>Number(v||0).toFixed(2);
+const esc=v=>String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+
+async function login(){
+  const msg=document.getElementById("loginMsg");
+  const emailEl=document.getElementById("email");
+  const passwordEl=document.getElementById("password");
+  msg.innerText="Logging in...";
+  try{
+    const {data,error}=await db.auth.signInWithPassword({
+      email:emailEl.value.trim(),
+      password:passwordEl.value
+    });
+    if(error){msg.innerText="❌ "+error.message;return;}
+    await enter(data.user);
+  }catch(e){
+    msg.innerText="❌ "+(e?.message||"Login failed");
+  }
+}
+async function enter(user){
+  const loginBox=document.getElementById("login");
+  const panelBox=document.getElementById("panel");
+  const msg=document.getElementById("loginMsg");
+  const whoEl=document.getElementById("who");
+  try{
+    const {data,error}=await db.rpc("is_netgain_admin");
+    if(error){await db.auth.signOut();msg.innerText="❌ Admin check error: "+error.message;return;}
+    if(!data){await db.auth.signOut();msg.innerText="❌ Admin access denied.";return;}
+    loginBox.classList.add("hidden");
+    panelBox.classList.remove("hidden");
+    whoEl.innerText=user.email||"Admin";
+    await Promise.all([loadDashboard(),loadUsers(),loadBookings(),loadWithdrawals(),loadHistory()]);
+  }catch(e){
+    msg.innerText="❌ "+(e?.message||"Admin check failed");
+  }
+}
+async function logout(){await db.auth.signOut();location.reload()}
+function tab(id,b){document.querySelectorAll(".view").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("active"));b.classList.add("active")}
+async function loadDashboard(){const [u,w,b,x]=await Promise.all([db.from("users").select("id,status"),db.from("wallets").select("balance,total_income"),db.from("bookings").select("id,status"),db.from("withdrawals").select("id,status")]);if(u.error||w.error){dashMsg.innerText="❌ "+(u.error?.message||w.error?.message);return}dUsers.innerText=(u.data||[]).length;dActive.innerText=(u.data||[]).filter(a=>String(a.status).toLowerCase()==="active").length;dPay.innerText=(b.data||[]).filter(a=>String(a.status).toLowerCase()==="pending").length;dWd.innerText=(x.data||[]).filter(a=>String(a.status).toLowerCase()==="pending").length;dBal.innerText=money((w.data||[]).reduce((s,a)=>s+Number(a.balance||0),0));dInc.innerText=money((w.data||[]).reduce((s,a)=>s+Number(a.total_income||0),0));dashMsg.innerText="✅ Updated"}
+async function loadUsers(){const {data,error}=await db.from("users").select("id,member_id,telegram_id,telegram_username,full_name,sponsor_id,status,wallets(balance)").order("id",{ascending:false});if(error){console.error(error);return}users=data||[];renderUsers()}
+function renderUsers(){
+ const q=document.getElementById("userQ").value.toLowerCase();
+ const a=users.filter(x=>[x.member_id,x.full_name,x.telegram_id,x.telegram_username].some(v=>String(v||"").toLowerCase().includes(q)));
+ document.getElementById("usersBody").innerHTML=a.map(x=>{
+   const active=String(x.status||"").toLowerCase()==="active";
+   const action=active
+     ? `<button class="red" onclick="changeUserStatus(${Number(x.id)},'deactivate','${esc(x.member_id)}')">DEACTIVATE</button>`
+     : `<button class="green" onclick="changeUserStatus(${Number(x.id)},'activate','${esc(x.member_id)}')">ACTIVATE</button>`;
+   return `<tr><td><b>${esc(x.member_id)}</b></td><td>${esc(x.full_name||"-")}</td><td>${esc(x.telegram_username||x.telegram_id||"-")}</td><td>${esc(x.sponsor_id||"Direct")}</td><td><span class="badge">${esc(x.status||"-")}</span></td><td>${money(x.wallets?.balance)}</td><td><div class="actions">${action}</div></td></tr>`;
+ }).join("")||'<tr><td colspan="7">No users.</td></tr>';
+}
+
+async function changeUserStatus(userId,action,memberId){
+ const activating=action==="activate";
+ if(!confirm(`${activating?"Activate":"Deactivate"} ${memberId}?`)) return;
+ const rpcName=activating?"admin_activate_user":"admin_deactivate_user";
+ try{
+   const {data,error}=await db.rpc(rpcName,{p_user_id:userId});
+   if(error){alert("❌ "+error.message);return;}
+   alert(`✅ ${memberId} ${activating?"activated":"deactivated"} successfully`);
+   await Promise.all([loadUsers(),loadDashboard()]);
+ }catch(e){
+   alert("❌ "+(e?.message||"Action failed"));
+ }
+}
+async function loadBookings(){const {data,error}=await db.from("bookings").select("*").order("created_at",{ascending:false}).limit(200);if(error){bookingBody.innerHTML=`<tr><td colspan="8">❌ ${esc(error.message)}</td></tr>`;return}bookingBody.innerHTML=(data||[]).map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td><b>${esc(x.member_id||x.user_id)}</b></td><td>${money(x.amount)} ${esc(x.currency||"USDT")}</td><td>${esc(x.network||"-")}</td><td>${esc(x.txid||"-")}</td><td>${esc(x.payment_from_wallet||"-")}</td><td>${esc(x.status||"-")}</td><td><div class="actions">${String(x.status).toLowerCase()==="pending"?`<button class="green" onclick="activateBooking(${Number(x.id)},'${esc(x.txid||"")}')">Activate</button>`:"-"}</div></td></tr>`).join("")||'<tr><td colspan="8">No payments.</td></tr>'}
+async function activateBooking(id,txid){if(!txid){alert("TXID missing.");return}if(!confirm("Activate this booking using existing secure activation function?"))return;const {data,error}=await db.rpc("admin_confirm_and_activate",{p_booking_id:id,p_txid:txid});if(error){alert("❌ "+error.message);return}alert("✅ Activated");await Promise.all([loadBookings(),loadDashboard(),loadUsers()])}
+async function loadWithdrawals(){const {data,error}=await db.from("withdrawals").select("*").order("requested_at",{ascending:false}).limit(200);if(error){withdrawBody.innerHTML=`<tr><td colspan="8">❌ ${esc(error.message)}</td></tr>`;return}withdrawBody.innerHTML=(data||[]).map(x=>`<tr><td>${new Date(x.requested_at||x.created_at).toLocaleString()}</td><td><b>${esc(x.member_id||x.user_id)}</b></td><td>${money(x.amount)}</td><td>${esc(x.wallet_address||x.wallet||"-")}</td><td>${esc(x.network||"BEP20")}</td><td>${esc(x.status||"-")}</td><td>${esc(x.txid||"-")}</td><td><div class="actions">${String(x.status).toLowerCase()==="pending"?`<button class="green" onclick="markPaid(${Number(x.id)})">Mark Paid</button><button class="red" onclick="rejectWd(${Number(x.id)})">Reject</button>`:"-"}</div></td></tr>`).join("")||'<tr><td colspan="8">No withdrawals.</td></tr>'}
+async function markPaid(id){const tx=prompt("Enter payout TXID / Transaction Hash");if(!tx)return;const {error}=await db.rpc("admin_mark_withdrawal_paid",{p_withdrawal_id:id,p_txid:tx});if(error){alert("❌ "+error.message);return}alert("✅ Marked paid");await Promise.all([loadWithdrawals(),loadDashboard()])}
+async function rejectWd(id){const reason=prompt("Enter rejection reason");if(!reason)return;const {error}=await db.rpc("admin_reject_withdrawal",{p_withdrawal_id:id,p_reason:reason});if(error){alert("❌ "+error.message);return}alert("✅ Rejected");await Promise.all([loadWithdrawals(),loadDashboard()])}
+async function lookup(){const id=fundMember.value.trim().toUpperCase();const {data,error}=await db.from("users").select("id,member_id,full_name,status,wallets(balance)").eq("member_id",id).maybeSingle();if(error||!data){preview.innerText="❌ Member not found.";return}preview.innerHTML=`✅ <b>${esc(data.member_id)}</b> | ${esc(data.full_name||"-")} | Balance: <b>${money(data.wallets?.balance)} USDT</b>`}
+async function fund(){const member=fundMember.value.trim().toUpperCase(),type=fundType.value,amount=Number(fundAmount.value),remark=fundRemark.value.trim();if(!/^NG\d{5}$/.test(member)||!amount||amount<=0||remark.length<3){fundMsg.innerText="❌ Check Member ID, amount and remark.";return}if(!confirm(`${type==="credit"?"ADD":"DEDUCT"} ${amount.toFixed(2)} USDT?`))return;fundMsg.innerText="Processing...";const {data,error}=await db.rpc("admin_manual_fund_transfer",{p_member_id:member,p_amount:amount,p_transfer_type:type,p_remark:remark});if(error){fundMsg.innerText="❌ "+error.message;return}fundMsg.innerText=`✅ New balance: ${money(data?.balance_after)} USDT`;fundAmount.value="";fundRemark.value="";await Promise.all([lookup(),loadDashboard(),loadUsers(),loadHistory()])}
+async function loadHistory(){const {data,error}=await db.from("admin_fund_transfers").select("*").order("created_at",{ascending:false}).limit(200);if(error){histBody.innerHTML=`<tr><td colspan="7">❌ ${esc(error.message)}</td></tr>`;return}histBody.innerHTML=(data||[]).map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td>${esc(x.member_id)}</td><td>${x.transfer_type==="credit"?"➕ ADD":"➖ DEDUCT"}</td><td>${money(x.amount)}</td><td>${money(x.balance_before)}</td><td>${money(x.balance_after)}</td><td>${esc(x.remark)}</td></tr>`).join("")||'<tr><td colspan="7">No history.</td></tr>'}
+
+async function loadAirdrops(){
+ const {data,error}=await db.from("airdrop_claims").select("*").order("created_at",{ascending:false}).limit(500);
+ if(error){airdropBody.innerHTML=`<tr><td colspan="4">❌ ${esc(error.message)}</td></tr>`;return}
+ const rows=data||[];
+ aClaims.innerText=rows.length;
+ aCoins.innerText=Number(rows.reduce((sum,x)=>sum+Number(x.coins||0),0)).toLocaleString();
+ airdropBody.innerHTML=rows.map(x=>`<tr><td>${new Date(x.created_at).toLocaleString()}</td><td>${esc(x.user_id)}</td><td>${esc(x.task_code)}</td><td>${Number(x.coins||0).toLocaleString()}</td></tr>`).join("")||'<tr><td colspan="4">No airdrop claims.</td></tr>';
+}
+
+(async()=>{const {data:{session}}=await db.auth.getSession();if(session?.user)await enter(session.user)})();
+</script></body></html>
